@@ -7,7 +7,7 @@ logging:
   config:
 #  file: logs/pgy.log
 #配置路径
-debug: true
+#debug: true
 
 spring:
   profiles:

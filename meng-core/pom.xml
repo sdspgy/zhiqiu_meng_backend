@@ -53,6 +53,12 @@
             <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
 
+        <!--kafka-->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!--quartz-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -73,11 +79,16 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
+        <!-- Hutool工具包 -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+
         <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
         </dependency>
 
         <!--swagger-->
@@ -130,16 +141,15 @@
             <artifactId>kaptcha</artifactId>
         </dependency>
 
-        <!--mybatis-->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-        </dependency>
-
         <!--mybatis-plus-->
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-extension</artifactId>
         </dependency>
 
         <!-- MP 代码生成器 -->
@@ -173,6 +183,12 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+        <!-- 多数据源启动器 -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+        </dependency>
+
         <!--druid-->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -189,7 +205,8 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional> <!-- 表示依赖不会传递 -->
+            <!--<optional>true</optional>-->  <!--不能被其它模块继承，如果多个子模块可以去掉  不必须-->
+            <scope>runtime</scope>  <!--只在运行时起作用  打包时不打进去-->
         </dependency>
 
         <!-- 解析客户端操作系统、浏览器等 -->

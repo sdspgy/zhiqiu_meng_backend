@@ -1,5 +1,6 @@
 package com.search;
 
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceAutoConfigure;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @ComponentScan(basePackages = { "com.manage", "com.auth", "com.core" })
 @MapperScan(basePackages = { "com.core.mapper" })
-@SpringBootApplication
+@SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
 @EnableSwagger2
 public class MengApplication {
 
