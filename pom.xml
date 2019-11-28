@@ -28,7 +28,7 @@
         <mybatis.generator.version>3.1.2</mybatis.generator.version>
         <velocity.version>1.7</velocity.version>
         <pagehelper.spring.boot.starter.version>1.2.10</pagehelper.spring.boot.starter.version>
-        <mysql.version>8.0.16</mysql.version>
+        <mysql.version>5.1.38</mysql.version>
         <spring.kafka.version>2.2.2.RELEASE</spring.kafka.version>
         <redis.pool.version>2.6.0</redis.pool.version>
         <shiro.version>1.4.0</shiro.version>
