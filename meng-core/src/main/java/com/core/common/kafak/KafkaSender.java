@@ -2,13 +2,12 @@ package com.core.common.kafak;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
 
 /**
  * @author zhiqiu
  * @since 2019-11-26
  */
-@Component
+//@Component
 public class KafkaSender {
 
 	@Autowired

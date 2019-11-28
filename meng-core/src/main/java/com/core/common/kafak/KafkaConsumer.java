@@ -1,13 +1,12 @@
 package com.core.common.kafak;
 
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.stereotype.Component;
 
 /**
  * @author zhiqiu
  * @since 2019-11-26
  */
-@Component
+//@Component
 public class KafkaConsumer {
 
 	/**
