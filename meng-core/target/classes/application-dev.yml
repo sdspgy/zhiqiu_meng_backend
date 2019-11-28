@@ -33,7 +33,7 @@ spring:
       primary: jdbc-admin #设置默认的数据源
       datasource:
         jdbc-admin:
-          driver-class-name: com.mysql.cj.jdbc.Driver
+          driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://localhost:3306/dbblog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
           username: root
           password: root
