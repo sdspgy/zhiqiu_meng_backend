@@ -30,8 +30,9 @@ public enum ErrorEnum {
 	ACCOUNT_LOCKING(10004, "账号已锁定"),
 	/*七牛OSS错误*/
 	OSS_CONFIG_ERROR(10050, "七牛配置信息错误"),
-	OSS_UPLOAD_ERROR(10051, "OSSBookNote上传失败");
+	OSS_UPLOAD_ERROR(10051, "OSSBookNote上传失败"),
 
+	PARAM_ERROR(7000, "参数有误");
 	private int code;
 	private String msg;
 }

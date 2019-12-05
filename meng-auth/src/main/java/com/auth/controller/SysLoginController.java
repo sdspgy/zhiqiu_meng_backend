@@ -1,8 +1,7 @@
 package com.auth.controller;
 
-import com.alibaba.excel.ExcelWriter;
-import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.auth.service.SysUserTokenService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.core.common.async.AsyncFactory;
@@ -10,7 +9,10 @@ import com.core.common.async.AsyncManager;
 import com.core.common.base.AbstractController;
 import com.core.common.constant.SysConstants;
 import com.core.common.exception.ErrorEnum;
+import com.core.common.exception.MyException;
+import com.core.common.utils.AesCbcUtil;
 import com.core.common.utils.MessageUtils;
+import com.core.common.utils.WxUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
 import com.core.entity.sys.SysUser;
@@ -19,6 +21,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,14 +37,16 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
  * Author:         知秋
  * CreateDate:     2019-08-30 20:24
  */
+@Slf4j
 @Api(tags = "sysLoginController", value = "sys-login-controller")
 @RestController
 public class SysLoginController extends AbstractController {
@@ -82,6 +87,68 @@ public class SysLoginController extends AbstractController {
 		return sysUserTokenService.createToken(user.getUserId());
 	}
 
+	@ApiOperation(value = "/wx/sys/isAuthor", notes = "微信判断授权")
+	@ApiImplicitParams({
+					@ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
+	})
+	@PostMapping("/wx/sys/isAuthor")
+	public Result isAuthor(String code) {
+		if (StringUtils.isEmpty(code)) {
+			throw new MyException(ErrorEnum.PARAM_ERROR);
+		}
+		JSONObject wxInfo = WxUtils.produceWxInfo(code);
+		String openId = wxInfo.getString("openid");
+		SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+						.lambda().eq(SysUser::getOpenId, openId));
+		boolean isAuthor = true;
+		if (Objects.isNull(sysUser)) {
+			isAuthor = false;
+		}
+		return Result.ok().put("isAuthor", isAuthor);
+	}
+
+	@ApiOperation(value = "/wx/sys/login", notes = "微信登录")
+	@ApiImplicitParams({
+					@ApiImplicitParam(name = "encryptedData", value = "encryptedData", required = true, dataTypeClass = String.class),
+					@ApiImplicitParam(name = "iv", value = "iv", required = true, dataTypeClass = String.class),
+					@ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
+	})
+	@PostMapping("/wx/sys/login")
+	public Result wxLogin(String encryptedData, String iv, String code) {
+		log.debug("----------------------执行------------------/wx/sys/login");
+		if (StringUtils.isEmpty(encryptedData) || StringUtils.isEmpty(iv) || StringUtils.isEmpty(code)) {
+			throw new MyException(ErrorEnum.PARAM_ERROR);
+		}
+		//解析出openid
+		JSONObject wxInfo = WxUtils.produceWxInfo(code);
+		String openId = wxInfo.getString("openid");
+		SysUser sysUser;
+		try {
+			//解析出详细信息
+			String result = AesCbcUtil.decrypt(encryptedData, wxInfo.getString("session_key"), iv, "UTF-8");
+			JSONObject detailedWxInfo = JSON.parseObject(result);
+			sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+							.lambda().eq(SysUser::getOpenId, openId));
+			if (StringUtils.isEmpty(sysUser)) {
+				SysUser user = new SysUser();
+				user.setUserId(new Random().nextInt(Integer.MAX_VALUE));
+				user.setOpenId(openId);
+				user.setUsername(detailedWxInfo.getString("nickName"));
+				user.setHeadUrl(detailedWxInfo.getString("avatarUrl"));
+				sysUserMapper.insert(user);
+			}
+			//重新查一次
+			sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+							.lambda().eq(SysUser::getOpenId, openId));
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		//生成token，并保存到redis
+		Result token = sysUserTokenService.createToken(sysUser.getUserId());
+		log.debug("----------------------结束------------------/wx/sys/login");
+		return token;
+	}
+
 	/*上传图片测试*/
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
 	public void upload(HttpServletRequest req, @RequestParam("file") MultipartFile file) {
@@ -101,7 +168,7 @@ public class SysLoginController extends AbstractController {
 	}
 
 	/*excel测试*/
-	@PutMapping("/expor")
+/*	@PutMapping("/expor")
 	public void exporExcel(HttpServletResponse response) throws IOException {
 		ExcelWriter writer = null;
 		OutputStream outputStream = response.getOutputStream();
@@ -124,7 +191,7 @@ public class SysLoginController extends AbstractController {
 		} finally {
 			response.getOutputStream().close();
 		}
-	}
+	}*/
 
 	private void head(HttpServletResponse response) {
 		response.setHeader("Content-disposition", "attachment; filename=" + "catagory.xls");

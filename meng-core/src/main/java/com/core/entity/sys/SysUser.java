@@ -1,7 +1,6 @@
 package com.core.entity.sys;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -31,14 +30,20 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @ApiModel(value = "SysUser对象", description = "用户管理")
-public class SysUser extends BaseRowModel implements Serializable {
+public class SysUser implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@ApiModelProperty(value = "主键")
-	@TableId(value = "user_id", type = IdType.NONE)
+	@TableId(value = "user_id", type = IdType.INPUT)
 	@ExcelProperty(value = "userId", index = 0)
 	private Integer userId;
+
+	@ApiModelProperty(value = "openId")
+	private String openId;
+
+	@ApiModelProperty(value = "头像URL")
+	private String headUrl;
 
 	@NotBlank(message = "用户名不能为空")
 	@ApiModelProperty(value = "用户名")
