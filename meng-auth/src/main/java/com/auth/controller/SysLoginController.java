@@ -12,6 +12,7 @@ import com.core.common.exception.ErrorEnum;
 import com.core.common.exception.MyException;
 import com.core.common.utils.AesCbcUtil;
 import com.core.common.utils.MessageUtils;
+import com.core.common.utils.QiniuUploadUtils;
 import com.core.common.utils.WxUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
@@ -34,12 +35,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -151,20 +150,29 @@ public class SysLoginController extends AbstractController {
 
 	/*上传图片测试*/
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public void upload(HttpServletRequest req, @RequestParam("file") MultipartFile file) {
+	public void upload(HttpServletRequest req, @RequestParam("file") MultipartFile[] file) {
 		String filePath = "/Volumes/pgy/";
-		try {
-			String fileName = System.currentTimeMillis() + file.getOriginalFilename();
-			String pgy_url = req.getServletContext().getRealPath("") + "uploaded" + File.separator + fileName;
-			String destFileName = filePath + fileName;
-			File destFile = new File(destFileName);
-			destFile.getParentFile().mkdirs();
-			file.transferTo(destFile);
-		} catch (FileNotFoundException e) {
+//		try {
+			for (MultipartFile f : file) {
+				String fileName = UUID.randomUUID().toString() + f.getOriginalFilename();
+				try {
+					QiniuUploadUtils.updateFile(f,fileName);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+/*				String pgy_url = req.getServletContext().getRealPath("") + "uploaded" + File.separator + fileName;
+				String destFileName = filePath + fileName;
+				File destFile = new File(destFileName);
+				destFile.getParentFile().mkdirs();
+				f.transferTo(destFile);*/
+			}
+//		}
+/*		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	/*excel测试*/
