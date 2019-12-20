@@ -74,6 +74,20 @@ public class SysUser implements Serializable {
 	@ApiModelProperty(value = "0禁用，1正常")
 	private String status;
 
+	private String motto;
+
+	private int signNum;
+
+	private boolean sign;
+
+	private int fansNum;
+
+	private int workNum;
+
+	private int support;
+
+	private int follow;
+
 	@TableField(exist = false)
 	private List<SysRole> roleList;
 }

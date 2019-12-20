@@ -36,4 +36,20 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	public void deletetUserByUserId(String userId) {
 		sysUserMapper.deleteById(new QueryWrapper<SysUser>().eq("user_id", userId));
 	}
+
+	@Override
+	public Boolean queryUserIsSign(Integer userId) {
+		SysUser sysUser = sysUserMapper.queryUserIsSign(userId);
+		return sysUser.isSign();
+	}
+
+	@Override
+	public void updateSign(Integer userId, int oksign) {
+		sysUserMapper.updateSign(userId, oksign);
+	}
+
+	@Override
+	public void updateSign(int nosign) {
+		sysUserMapper.updateSignTimeTask(nosign);
+	}
 }

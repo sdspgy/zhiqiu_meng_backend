@@ -48,6 +48,11 @@
         where sur.user_id = #{userId}
     </select>
 
+    <select id="queryUserIsSign" resultType="com.core.entity.sys.SysUser">
+        select sign from sys_user
+        where user_id = #{userId}
+    </select>
+
     <!-- 批量修改密码-->
     <update id="resetPassword">
         update sys_user su set password=#{toHex},salt=#{salt}
@@ -55,5 +60,14 @@
         <foreach collection="userIdList" item="item" index="index" open="(" separator="," close=")">
             #{item}
         </foreach>
+    </update>
+
+    <update id="updateSign">
+        update sys_user set signNum = (signNum + 1), sign = #{oksign}
+        where user_id = #{userId}
+    </update>
+
+    <update id="updateSignTimeTask">
+        update sys_user set sign = #{onsign}
     </update>
 </mapper>

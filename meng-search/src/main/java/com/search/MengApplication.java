@@ -13,7 +13,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 
 @ComponentScan(basePackages = { "com.manage", "com.auth", "com.core" })
-@MapperScan(basePackages = { "com.core.mapper" })
+@MapperScan(basePackages = { "com.core.mapper","com.manage.*.mapper" })
 @SpringBootApplication(exclude = DruidDataSourceAutoConfigure.class)
 @EnableSwagger2
 public class MengApplication {

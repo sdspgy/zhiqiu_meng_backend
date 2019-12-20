@@ -35,4 +35,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 * @param salt
 	 */
 	void resetPassword(List<Integer> userIdList, String toHex, String salt);
+
+	SysUser queryUserIsSign(Integer userId);
+
+	void updateSign(Integer userId, int oksign);
+
+	void updateSignTimeTask(int nosign);
 }

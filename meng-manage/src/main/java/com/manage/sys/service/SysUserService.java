@@ -18,4 +18,10 @@ public interface SysUserService extends IService<SysUser> {
 	void insertUser(SysUser sysUser);
 
 	void deletetUserByUserId(String userId);
+
+	Boolean queryUserIsSign(Integer userId);
+
+	void updateSign(Integer userId, int oksign);
+
+	void updateSign(int nosign);
 }
