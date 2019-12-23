@@ -40,7 +40,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public Boolean queryUserIsSign(Integer userId) {
 		SysUser sysUser = sysUserMapper.queryUserIsSign(userId);
-		return sysUser.isSign();
+//		return sysUser.isSign();
+		return null;
 	}
 
 	@Override
@@ -51,5 +52,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 	@Override
 	public void updateSign(int nosign) {
 		sysUserMapper.updateSignTimeTask(nosign);
+	}
+
+	@Override
+	public SysUser queryUserIdAndHeadImg(Integer userid) {
+		SysUser sysUser = sysUserMapper.queryUserIdAndHeadImg(userid);
+		return sysUser;
 	}
 }

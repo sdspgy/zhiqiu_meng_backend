@@ -24,4 +24,6 @@ public interface SysUserService extends IService<SysUser> {
 	void updateSign(Integer userId, int oksign);
 
 	void updateSign(int nosign);
+
+    SysUser queryUserIdAndHeadImg(Integer userid);
 }

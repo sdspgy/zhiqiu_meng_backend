@@ -129,7 +129,7 @@ public class ToolUtils {
 		return collect;
 	}
 
-	public static List<Integer> arrayToListByArrayList(int[] array) {
+	public static List<Integer> arrayToList(int[] array) {
 		List ints = Arrays.asList(array);
 		return ints;
 	}

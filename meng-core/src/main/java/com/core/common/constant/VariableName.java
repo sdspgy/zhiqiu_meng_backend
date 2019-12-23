@@ -1,4 +1,4 @@
-package com.core.entity.sys;
+package com.core.common.constant;
 
 /**
  * @author zhiqiu

@@ -1,6 +1,6 @@
-package com.manage.light.mapper;
+package com.core.mapper.light;
 
-import com.manage.light.entity.Light;
+import com.core.entity.light.Light;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface LightMapper extends BaseMapper<Light> {
 
+    Light isSignByUserId(Integer userId);
 }

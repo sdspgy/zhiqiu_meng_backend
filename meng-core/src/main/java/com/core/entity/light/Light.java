@@ -1,4 +1,4 @@
-package com.manage.light.entity;
+package com.core.entity.light;
 
 import com.core.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
