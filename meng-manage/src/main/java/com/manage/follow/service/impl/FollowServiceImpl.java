@@ -26,4 +26,9 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
         Follow follow = followMapper.selectById(userId);
         return follow;
     }
+
+    @Override
+    public void initFollow(Follow follow) {
+        followMapper.insert(follow);
+    }
 }

@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IFansService extends IService<Fans> {
 
     Fans queryFans(Integer userId);
+
+    void initFans(Fans fans);
 }

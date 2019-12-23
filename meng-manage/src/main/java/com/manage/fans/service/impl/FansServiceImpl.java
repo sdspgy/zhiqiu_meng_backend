@@ -27,4 +27,9 @@ public class FansServiceImpl extends ServiceImpl<FansMapper, Fans> implements IF
         Fans fans = fansMapper.selectById(userId);
         return fans;
     }
+
+    @Override
+    public void initFans(Fans fans) {
+        fansMapper.insert(fans);
+    }
 }

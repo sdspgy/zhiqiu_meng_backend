@@ -30,4 +30,6 @@ public class Follow implements Serializable {
     private String follows;
 
 
+    public void initFollow(Follow follow) {
+    }
 }

@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface IFollowService extends IService<Follow> {
 
     Follow queryFollow(Integer userId);
+
+    void initFollow(Follow follow);
 }
