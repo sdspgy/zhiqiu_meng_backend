@@ -2,6 +2,8 @@ package com.core.entity.work;
 
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.core.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -10,7 +12,7 @@ import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author zhiqiu
@@ -19,8 +21,8 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@ApiModel(value="Work对象", description="")
-public class Work implements Serializable {
+@ApiModel(value = "Work对象", description = "")
+public class Work extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -41,6 +43,9 @@ public class Work implements Serializable {
 
     @ApiModelProperty(value = "作品赞数")
     private Integer workSupport;
+
+    @ApiModelProperty(value = "点赞人userId,';'作分隔符")
+    private String workSupportUsers;
 
     @ApiModelProperty(value = "作品浏览数")
     private Integer workLook;
