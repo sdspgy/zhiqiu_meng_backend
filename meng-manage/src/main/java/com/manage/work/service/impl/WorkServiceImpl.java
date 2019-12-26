@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.core.common.constant.PushWorkConstants;
 import com.core.common.constant.WorkConstans;
+import com.core.common.utils.ToolUtils;
 import com.core.entity.sys.PageVo;
 import com.core.entity.work.Work;
 import com.core.mapper.work.WorkMapper;
@@ -13,6 +14,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -69,5 +71,33 @@ public class WorkServiceImpl extends ServiceImpl<WorkMapper, Work> implements IW
             queryWrapper.orderByDesc("create_time");
         }
         return this.page(initMpPage, queryWrapper);
+    }
+
+    @Override
+    public IPage<Work> queryWorkSearch(String searchText, Page initMpPage) {
+        QueryWrapper<Work> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", WorkConstans.CHECK_SUCCESS);
+        queryWrapper.like("work_name", searchText);
+        return this.page(initMpPage, queryWrapper);
+    }
+
+    @Override
+    public List<Work> querySupportRank() {
+        QueryWrapper<Work> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", WorkConstans.CHECK_SUCCESS);
+        queryWrapper.lambda().ge(Work::getCreateTime, ToolUtils.lastWeek());
+        queryWrapper.lambda().orderByDesc(Work::getWorkSupport);
+        queryWrapper.apply("limit 10");
+        return workMapper.selectList(queryWrapper);
+    }
+
+    @Override
+    public List<Work> queryLookRank() {
+        QueryWrapper<Work> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", WorkConstans.CHECK_SUCCESS);
+        queryWrapper.lambda().ge(Work::getCreateTime, ToolUtils.lastWeek());
+        queryWrapper.lambda().orderByDesc(Work::getWorkLook);
+        queryWrapper.apply("limit 10");
+        return workMapper.selectList(queryWrapper);
     }
 }

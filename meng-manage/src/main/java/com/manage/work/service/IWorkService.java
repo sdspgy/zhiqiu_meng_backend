@@ -6,6 +6,8 @@ import com.core.entity.sys.PageVo;
 import com.core.entity.work.Work;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务类
@@ -27,4 +29,10 @@ public interface IWorkService extends IService<Work> {
     void checkWorkStatus(String workId, int checkType);
 
     IPage<Work> queryWorksByType(int type, Page initMpPage);
+
+    IPage<Work> queryWorkSearch(String searchText, Page initMpPage);
+
+    List<Work> querySupportRank();
+
+    List<Work> queryLookRank();
 }

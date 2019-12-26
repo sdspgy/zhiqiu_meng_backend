@@ -113,7 +113,7 @@ public class WorkController extends AbstractController {
         return Result.ok();
     }
 
-    @PostMapping("checkWorkStatus")
+    @PostMapping("/checkWorkStatus")
     public Result checkWorkStatus(String[] workIds, int checkType) {
         if (WorkConstans.CHECK_SUCCESS == checkType) {
             for (String workId : workIds) {
@@ -125,6 +125,13 @@ public class WorkController extends AbstractController {
                 workService.checkWorkStatus(workId, checkType);
             }
         }
+        return Result.ok();
+    }
+
+    @PostMapping("/rank")
+    public Result rank() {
+        List<Work> worksSupportRank = workService.querySupportRank();
+        workService.queryLookRank()
         return Result.ok();
     }
 }

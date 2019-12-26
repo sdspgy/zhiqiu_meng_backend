@@ -1,15 +1,18 @@
 package com.manage.sys.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.core.common.base.AbstractController;
+import com.core.common.utils.PageUtil;
 import com.core.common.utils.StringUtils;
+import com.core.entity.sys.PageVo;
 import com.core.entity.sys.Result;
+import com.core.entity.work.Work;
 import com.manage.sys.service.SysUserService;
+import com.manage.work.service.impl.WorkServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
@@ -24,6 +27,8 @@ public class UserInfoController extends AbstractController {
 
     @Autowired
     private SysUserService sysUserService;
+    @Resource
+    private WorkServiceImpl workService;
 
     @GetMapping("/queryUserSearchHistory")
     public Result queryUserSearchHistory() {
@@ -34,8 +39,8 @@ public class UserInfoController extends AbstractController {
     }
 
     @PostMapping("workSearch")
-    public Result workSearch(String searchText) {
-
+    public Result workSearch(String searchText, @ModelAttribute PageVo pageVo) {
+        IPage<Work> workIPage = workService.queryWorkSearch(searchText, PageUtil.initMpPage(pageVo));
         String userSearchHistory = sysUserService.queryUserSearchHistory(getUserId());
         if (StringUtils.isNotBlank(userSearchHistory)) {
             String[] splitUserSearchHistory = userSearchHistory.split(";");
@@ -54,6 +59,7 @@ public class UserInfoController extends AbstractController {
         }
         sysUserService.updateUserSearchHistory(userSearchHistory, getUserId());
 
-        return Result.ok();
+        return Result.ok()
+                .put("workIPage", workIPage);
     }
 }
