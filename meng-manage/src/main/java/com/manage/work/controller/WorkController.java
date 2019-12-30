@@ -1,10 +1,8 @@
 package com.manage.work.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.core.common.base.AbstractController;
-import com.core.common.constant.PushWorkConstants;
 import com.core.common.constant.WorkConstans;
 import com.core.common.utils.PageUtil;
 import com.core.common.utils.QiniuUploadUtils;
@@ -12,17 +10,12 @@ import com.core.common.utils.StringUtils;
 import com.core.entity.sys.PageVo;
 import com.core.entity.sys.Result;
 import com.core.entity.work.Work;
-import com.google.common.collect.Lists;
 import com.manage.work.service.impl.WorkServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -131,7 +124,7 @@ public class WorkController extends AbstractController {
     @PostMapping("/rank")
     public Result rank() {
         List<Work> worksSupportRank = workService.querySupportRank();
-        workService.queryLookRank()
+        workService.queryLookRank();
         return Result.ok();
     }
 }

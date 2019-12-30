@@ -1,14 +1,13 @@
 package com.core.entity.work;
 
-import java.time.LocalDateTime;
-import java.io.Serializable;
-
 import com.core.common.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -58,9 +57,5 @@ public class Work extends BaseEntity implements Serializable {
 
     @ApiModelProperty(value = "分组作品集")
     private String groupWork;
-
-    @ApiModelProperty(value = "创建时间")
-    private LocalDateTime createTime;
-
 
 }
