@@ -1,7 +1,7 @@
 package com.manage.light.service.impl;
 
-import com.manage.light.entity.Light;
-import com.manage.light.mapper.LightMapper;
+import com.core.entity.light.Light;
+import com.core.mapper.light.LightMapper;
 import com.manage.light.service.ILightService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,4 +30,12 @@ public class LightServiceImpl extends ServiceImpl<LightMapper, Light> implements
 		light.setUserId(userId);
 		lightMapper.insert(light);
 	}
+
+	@Override
+	public Light isSignByUserId(Integer userId) {
+		lightMapper.isSignByUserId(userId);
+		return null;
+	}
+
+
 }

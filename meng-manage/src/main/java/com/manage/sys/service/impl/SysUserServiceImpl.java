@@ -18,38 +18,56 @@ import java.util.List;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
-	@Autowired
-	SysUserMapper sysUserMapper;
+    @Autowired
+    SysUserMapper sysUserMapper;
 
-	/*查询所以用户信息（角色）*/
-	@Override
-	public List<SysUser> queryAllUser() {
-		return sysUserMapper.queryAllUser();
-	}
+    /*查询所以用户信息（角色）*/
+    @Override
+    public List<SysUser> queryAllUser() {
+        return sysUserMapper.queryAllUser();
+    }
 
-	@Override
-	public void insertUser(SysUser sysUser) {
-		sysUserMapper.insert(sysUser);
-	}
+    @Override
+    public void insertUser(SysUser sysUser) {
+        sysUserMapper.insert(sysUser);
+    }
 
-	@Override
-	public void deletetUserByUserId(String userId) {
-		sysUserMapper.deleteById(new QueryWrapper<SysUser>().eq("user_id", userId));
-	}
+    @Override
+    public void deletetUserByUserId(String userId) {
+        sysUserMapper.deleteById(new QueryWrapper<SysUser>().eq("user_id", userId));
+    }
 
-	@Override
-	public Boolean queryUserIsSign(Integer userId) {
-		SysUser sysUser = sysUserMapper.queryUserIsSign(userId);
-		return sysUser.isSign();
-	}
+    @Override
+    public Boolean queryUserIsSign(Integer userId) {
+        SysUser sysUser = sysUserMapper.queryUserIsSign(userId);
+//		return sysUser.isSign();
+        return null;
+    }
 
-	@Override
-	public void updateSign(Integer userId, int oksign) {
-		sysUserMapper.updateSign(userId, oksign);
-	}
+    @Override
+    public void updateSign(Integer userId, int oksign) {
+        sysUserMapper.updateSign(userId, oksign);
+    }
 
-	@Override
-	public void updateSign(int nosign) {
-		sysUserMapper.updateSignTimeTask(nosign);
-	}
+    @Override
+    public void updateSign(int nosign) {
+        sysUserMapper.updateSignTimeTask(nosign);
+    }
+
+    @Override
+    public SysUser queryUserIdAndHeadImg(Integer userid) {
+        SysUser sysUser = sysUserMapper.queryUserIdAndHeadImg(userid);
+        return sysUser;
+    }
+
+    @Override
+    public String queryUserSearchHistory(Integer userId) {
+        String userSearchHistory = sysUserMapper.queryUserSearchHistory(userId);
+        return userSearchHistory;
+    }
+
+    @Override
+    public void updateUserSearchHistory(String userSearchHistory, Integer userId) {
+        sysUserMapper.updateUserSearchHistory(userSearchHistory, userId);
+    }
 }

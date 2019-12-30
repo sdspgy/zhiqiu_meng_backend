@@ -1,6 +1,6 @@
 package com.core.common.utils;
 
-import com.core.entity.sys.VariableName;
+import com.core.common.constant.VariableName;
 import com.google.gson.Gson;
 import com.qiniu.common.QiniuException;
 import com.qiniu.common.Zone;

@@ -1,6 +1,6 @@
 package com.manage.light.service;
 
-import com.manage.light.entity.Light;
+import com.core.entity.light.Light;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -14,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface ILightService extends IService<Light> {
 
 	void addSignByUserId(Integer userId);
+
+    Light isSignByUserId(Integer userId);
 }

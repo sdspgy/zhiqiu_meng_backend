@@ -32,6 +32,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -148,32 +149,6 @@ public class SysLoginController extends AbstractController {
 		return token;
 	}
 
-	/*上传图片测试*/
-	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public void upload(HttpServletRequest req, @RequestParam("file") MultipartFile[] file) {
-		String filePath = "/Volumes/pgy/";
-//		try {
-			for (MultipartFile f : file) {
-				String fileName = UUID.randomUUID().toString() + f.getOriginalFilename();
-				try {
-					QiniuUploadUtils.updateFile(f,fileName);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-
-/*				String pgy_url = req.getServletContext().getRealPath("") + "uploaded" + File.separator + fileName;
-				String destFileName = filePath + fileName;
-				File destFile = new File(destFileName);
-				destFile.getParentFile().mkdirs();
-				f.transferTo(destFile);*/
-			}
-//		}
-/*		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
-	}
 
 	/*excel测试*/
 /*	@PutMapping("/expor")

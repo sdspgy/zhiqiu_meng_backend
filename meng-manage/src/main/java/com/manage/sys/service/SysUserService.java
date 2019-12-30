@@ -12,16 +12,22 @@ import java.util.List;
  */
 public interface SysUserService extends IService<SysUser> {
 
-	/*查询所以用户信息（角色）*/
-	List<SysUser> queryAllUser();
+    /*查询所以用户信息（角色）*/
+    List<SysUser> queryAllUser();
 
-	void insertUser(SysUser sysUser);
+    void insertUser(SysUser sysUser);
 
-	void deletetUserByUserId(String userId);
+    void deletetUserByUserId(String userId);
 
-	Boolean queryUserIsSign(Integer userId);
+    Boolean queryUserIsSign(Integer userId);
 
-	void updateSign(Integer userId, int oksign);
+    void updateSign(Integer userId, int oksign);
 
-	void updateSign(int nosign);
+    void updateSign(int nosign);
+
+    SysUser queryUserIdAndHeadImg(Integer userid);
+
+    String queryUserSearchHistory(Integer userId);
+
+    void updateUserSearchHistory(String userSearchHistory, Integer userId);
 }

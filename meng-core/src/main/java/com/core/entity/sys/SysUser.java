@@ -32,62 +32,65 @@ import java.util.List;
 @ApiModel(value = "SysUser对象", description = "用户管理")
 public class SysUser implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@ApiModelProperty(value = "主键")
-	@TableId(value = "user_id", type = IdType.INPUT)
-	@ExcelProperty(value = "userId", index = 0)
-	private Integer userId;
+    @ApiModelProperty(value = "主键")
+    @TableId(value = "user_id", type = IdType.INPUT)
+    @ExcelProperty(value = "userId", index = 0)
+    private Integer userId;
 
-	@ApiModelProperty(value = "openId")
-	private String openId;
+    @ApiModelProperty(value = "openId")
+    private String openId;
 
-	@ApiModelProperty(value = "头像URL")
-	private String headUrl;
+    @ApiModelProperty(value = "头像URL")
+    private String headUrl;
 
-	@NotBlank(message = "用户名不能为空")
-	@ApiModelProperty(value = "用户名")
-	@ExcelProperty(value = "用户名", index = 1)
-	private String username;
+    @NotBlank(message = "用户名不能为空")
+    @ApiModelProperty(value = "用户名")
+    @ExcelProperty(value = "用户名", index = 1)
+    private String username;
 
-	@NotBlank(message = "密码不能为空")
-	@Length(min = 4, max = 12)
-	@ApiModelProperty(value = "密码")
-	private String password;
+    @NotBlank(message = "密码不能为空")
+    @Length(min = 4, max = 12)
+    @ApiModelProperty(value = "密码")
+    private String password;
 
-	@NotBlank(message = "邮箱不能为空")
-	@Email(message = "邮箱格式不正确")
-	@ApiModelProperty(value = "邮箱")
-	private String email;
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式不正确")
+    @ApiModelProperty(value = "邮箱")
+    private String email;
 
-	@JsonIgnore
-	@ApiModelProperty(value = "密码盐")
-	private String salt;
+    @JsonIgnore
+    @ApiModelProperty(value = "密码盐")
+    private String salt;
 
-	@ApiModelProperty(value = "创建者Id")
-	private Integer createUserId;
+    @ApiModelProperty(value = "创建者Id")
+    private Integer createUserId;
 
-	@ExcelProperty(value = "时间", index = 2)
-	@ApiModelProperty(value = "创建时间")
-	private Date createTime;
+    @ExcelProperty(value = "时间", index = 2)
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
 
-	@ApiModelProperty(value = "0禁用，1正常")
-	private String status;
+    @ApiModelProperty(value = "0禁用，1正常")
+    private String status;
 
-	private String motto;
+    @ApiModelProperty(value = "历史搜索记录,';'作分隔符")
+    private String historySearch;
+//
+//	private String motto;
+//
+//	private int signNum;
+//
+//	private boolean sign;
+//
+//	private int fansNum;
+//
+//	private int workNum;
+//
+//	private int support;
+//
+//	private int follow;
 
-	private int signNum;
-
-	private boolean sign;
-
-	private int fansNum;
-
-	private int workNum;
-
-	private int support;
-
-	private int follow;
-
-	@TableField(exist = false)
-	private List<SysRole> roleList;
+    @TableField(exist = false)
+    private List<SysRole> roleList;
 }
