@@ -34,7 +34,7 @@ public class WorkController extends AbstractController {
     @Autowired
     private WorkServiceImpl workService;
 
-    /*上传图片测试*/
+    /*上传图片到七牛云*/
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     public void upload(@RequestParam("file") MultipartFile[] file) {
         if (file.length > 0) {
@@ -51,20 +51,22 @@ public class WorkController extends AbstractController {
 
     @PostMapping("/uploadWork")
     public Result uploadWork(String workName, String workText, String[] files) {
-        StringBuffer worksPath = new StringBuffer();
-        for (String filePath : files) {
-            String[] fileSplit = filePath.split("/");
-            worksPath.append("http://cdn.mvptyz.cn/").append(fileSplit[fileSplit.length - 1]).append(";");
+        if (files.length > 0) {
+            StringBuffer worksPath = new StringBuffer();
+            for (String filePath : files) {
+                String[] fileSplit = filePath.split("/");
+                worksPath.append("http://cdn.mvptyz.cn/").append(fileSplit[fileSplit.length - 1]).append(";");
+            }
+            String finalyWorksPath = worksPath.toString().substring(0, worksPath.length() - 1);
+            Work work = new Work();
+            work.setWorkId(UUID.randomUUID().toString());
+            work.setUserId(getUserId());
+            work.setStatus(WorkConstans.STAY_CHECK);
+            work.setWorkName(workName);
+            work.setWorkText(workText);
+            work.setWorkImgs(finalyWorksPath);
+            workService.save(work);
         }
-        String finalyWorksPath = worksPath.toString().substring(0, worksPath.length() - 1);
-        Work work = new Work();
-        work.setWorkId(UUID.randomUUID().toString());
-        work.setUserId(getUserId());
-        work.setStatus(WorkConstans.STAY_CHECK);
-        work.setWorkName(workName);
-        work.setWorkText(workText);
-        work.setWorkImgs(finalyWorksPath);
-        workService.save(work);
         return Result.ok();
     }
 
