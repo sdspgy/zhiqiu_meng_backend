@@ -34,12 +34,12 @@ spring:
       datasource:
         jdbc-admin:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://10.2.10.41:3306/dbblog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+          url: jdbc:mysql://127.0.0.1:3306/dbblog?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
           username: root
           password: root
 
   kafka:
-    bootstrap-servers: 10.2.10.41:9092
+    bootstrap-servers: 127.0.0.1:9092
     producer:
       batch-size: 65536
       buffer-memory: 524288
@@ -82,7 +82,7 @@ spring:
 
   # redis 配置
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6379
     timeout: 6s #连接池超时时长
     lettuce:
