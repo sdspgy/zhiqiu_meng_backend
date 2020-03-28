@@ -47,7 +47,7 @@ public class OAuth2Realm extends AuthorizingRealm {
 	/*认证(登录时调用)*/
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
-		String accessToken = (String) token.getPrincipal();
+			String accessToken = (String) token.getPrincipal();
 		//根据accessToken，查询用户信息
 		SysUserToken tokenEntity = shiroService.queryByToken(accessToken);
 		//token失效

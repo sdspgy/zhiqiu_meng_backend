@@ -13,5 +13,7 @@ public class VariableName {
 	//    七牛存储空间名
 	public static final String bucket = "beiqishuhau";
 	//    七牛默认域名
-	public static final String domain = "http:/cdn-mvptyz-cn-idv9qem.qiniudns.com";
+	public static final String domain = "https:/mvptyz.cn";
+
+	public static final String cdnAdress = "https://mvptyz.cn/";
 }
