@@ -25,8 +25,17 @@ public class SysMenu implements Serializable {
 	@ApiModelProperty(value = "父菜单ID，一级菜单为0")
 	private Integer parentId;
 
-	@ApiModelProperty(value = "菜单名称")
+	@ApiModelProperty(value = "路由路径")
+	private String path;
+
+	@ApiModelProperty(value = "路由名")
 	private String name;
+
+	@ApiModelProperty(value = "路由Title")
+	private String title;
+
+	@ApiModelProperty(value = "菜单名称")
+	private String notes;
 
 	@ApiModelProperty(value = "菜单URL")
 	private String url;
@@ -45,7 +54,7 @@ public class SysMenu implements Serializable {
 	private Integer orderNum;
 
 	@TableField(exist = false)
-	private List<SysMenu> childSysMenu;
+	private List<SysMenu> children;
 
 	@TableField(exist = false)
 	private Boolean isHave;

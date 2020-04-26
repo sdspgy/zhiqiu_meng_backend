@@ -52,6 +52,8 @@ public class ShiroConfig {
 		Map<String, String> filterMap = new LinkedHashMap<>();
 		/*两个url规则都可以匹配同一个url,只执行第一个*/
 		filterMap.put("/admin/sys/login", "anon");
+		filterMap.put("/sys/menu/menuRouter", "anon");
+		filterMap.put("/sys/menu/menuTree", "anon");
 		filterMap.put("/wx/sys/login", "anon");
 		filterMap.put("/wx/sys/isAuthor", "anon");
 		filterMap.put("/open/**", "anon");

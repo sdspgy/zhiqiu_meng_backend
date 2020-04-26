@@ -3,20 +3,22 @@
 <mapper namespace="com.core.mapper.sys.SysMenuMapper">
 
     <sql id="sysMenu">
-      menu_id,parent_id,name,url,perms,type,order_num,icon
+      menu_id,parent_id,name,path,perms,type,order_num,icon
     </sql>
 
     <resultMap id="sysMenuMap" type="com.core.entity.sys.SysMenu">
         <id column="menu_id" property="menuId" jdbcType="BIGINT"/>
         <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="notes" property="notes" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
         <result column="perms" property="perms" jdbcType="VARCHAR"/>
         <result column="type" property="type" jdbcType="BIGINT"/>
         <result column="order_num" property="orderNum" jdbcType="VARCHAR"/>
         <result column="icon" property="icon" jdbcType="VARCHAR"/>
 
-        <collection property="childSysMenu" select="querySysMenuTree" column="menu_id">
+        <collection property="children" select="querySysMenuTree" column="menu_id">
         </collection>
     </resultMap>
 
@@ -24,4 +26,29 @@
     <select id="querySysMenuTree" parameterType="java.lang.Integer" resultMap="sysMenuMap">
         select <include refid="sysMenu"></include> from sys_menu sm where parent_id = #{parentId} order by order_num ASC
     </select>
+
+    <resultMap id="sysMenuMaps" type="com.core.entity.sys.SysMenu">
+        <id column="menu_id" property="menuId" jdbcType="BIGINT"/>
+        <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="notes" property="notes" jdbcType="VARCHAR"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="perms" property="perms" jdbcType="VARCHAR"/>
+        <result column="type" property="type" jdbcType="BIGINT"/>
+        <result column="order_num" property="orderNum" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+
+        <collection property="children" select="queryMenuRouterByUserId" column="menu_id">
+        </collection>
+    </resultMap>
+
+    <select id="queryMenuRouterByUserId" parameterType="java.lang.Integer" resultMap="sysMenuMaps">
+        select sm.menu_id,sm.parent_id, sm.path,sm.name,sm.title from `sys_user_role` sur
+                left join `sys_role_menu` srm using(role_id)
+                left join `sys_menu` sm using(menu_id)
+                where sm.type = 3 and sm.parent_id  = #{parentId} and sur.user_id = 1
+                order by order_num ASC
+    </select>
+
 </mapper>

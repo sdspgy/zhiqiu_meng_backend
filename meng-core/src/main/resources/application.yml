@@ -3,7 +3,7 @@
 #配置的日志
 logging:
   level:
-    com: info
+    com: debug
   config:
 #  file: logs/pgy.log
 #配置路径

@@ -20,6 +20,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	@Autowired
 	private SysMenuMapper sysMenuMapper;
 
+	@Override
+	public List<SysMenu> queryMenuRouterByUserId(Integer userId) {
+		List<SysMenu> sysMenus = sysMenuMapper.queryMenuRouterByUserId(userId);
+		return sysMenus;
+	}
+
 	/*查询完整权限树*/
 	@Override
 	public List<SysMenu> querySysMenuTree(Integer parentId) {
