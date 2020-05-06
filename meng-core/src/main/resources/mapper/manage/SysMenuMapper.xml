@@ -3,7 +3,7 @@
 <mapper namespace="com.core.mapper.sys.SysMenuMapper">
 
     <sql id="sysMenu">
-      menu_id,parent_id,name,path,perms,type,order_num,icon
+      menu_id,parent_id,name,path,perms,type,order_num,icon,title,notes
     </sql>
 
     <resultMap id="sysMenuMap" type="com.core.entity.sys.SysMenu">
@@ -44,11 +44,11 @@
     </resultMap>
 
     <select id="queryMenuRouterByUserId" parameterType="java.lang.Integer" resultMap="sysMenuMaps">
-        select sm.menu_id,sm.parent_id, sm.path,sm.name,sm.title from `sys_user_role` sur
+        select distinct sm.menu_id,sm.parent_id, sm.path,sm.name,sm.title,sm.notes,sm.perms,sm.type,sm.icon,sm.order_num from `sys_user_role` sur
                 left join `sys_role_menu` srm using(role_id)
                 left join `sys_menu` sm using(menu_id)
                 where sm.type = 3 and sm.parent_id  = #{parentId} and sur.user_id = 1
-                order by order_num ASC
+                order by sm.order_num ASC
     </select>
 
 </mapper>

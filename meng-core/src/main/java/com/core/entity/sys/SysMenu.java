@@ -37,9 +37,6 @@ public class SysMenu implements Serializable {
 	@ApiModelProperty(value = "菜单名称")
 	private String notes;
 
-	@ApiModelProperty(value = "菜单URL")
-	private String url;
-
 	@ApiModelProperty(value = "授权(多个用逗号分隔，如：user:list,user:create)")
 	@TableField(strategy = FieldStrategy.IGNORED)
 	private String perms;
@@ -55,8 +52,5 @@ public class SysMenu implements Serializable {
 
 	@TableField(exist = false)
 	private List<SysMenu> children;
-
-	@TableField(exist = false)
-	private Boolean isHave;
 
 }
