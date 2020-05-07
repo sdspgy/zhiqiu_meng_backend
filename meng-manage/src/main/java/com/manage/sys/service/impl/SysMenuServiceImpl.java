@@ -33,8 +33,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	}
 
 	@Override
-	public void deletetMenuByMenuId(String menuId) {
-		sysMenuMapper.deleteById(new QueryWrapper<SysMenu>().eq("menu_id", menuId));
+	public void deletetMenuByMenuId(Integer menuId) {
+		sysMenuMapper.delete(new QueryWrapper<SysMenu>().eq("menu_id", menuId));
 	}
 
 	@Override

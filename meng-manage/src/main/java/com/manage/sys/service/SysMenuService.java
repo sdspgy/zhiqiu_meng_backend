@@ -19,5 +19,5 @@ public interface SysMenuService extends IService<SysMenu> {
 
 	void insertMenu(SysMenu sysMenu);
 
-	void deletetMenuByMenuId(String menuId);
+	void deletetMenuByMenuId(Integer menuId);
 }

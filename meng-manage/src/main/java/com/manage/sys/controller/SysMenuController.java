@@ -55,10 +55,10 @@ public class SysMenuController extends AbstractController {
 		return Result.ok();
 	}
 
-	@PostMapping("/deletetMenu/{menuId}")
-	@RequiresPermissions("sys:menu:deletet")
+	@PostMapping("/deleteMenu")
+	@RequiresPermissions("sys:menu:info")
 	@Log(value = "资源删除")
-	public Result deletetUser(@PathVariable("menuId") String menuId) {
+	public Result deletetUser(Integer menuId) {
 		sysMenuService.deletetMenuByMenuId(menuId);
 		return Result.ok();
 	}
