@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
  * CreateDate:     2019-08-30 20:25
  */
 @RestController
-@RequestMapping("/admin/sys/role")
+@RequestMapping("/sys/role")
 public class SysRoleController extends AbstractController {
 
 	@Autowired
@@ -44,8 +45,8 @@ public class SysRoleController extends AbstractController {
 	@PostMapping("/insertRole")
 	@RequiresPermissions("sys:role:info")
 	@Log(value = "添加角色")
-	public Result insertRole(@RequestBody SysRole sysRole) {
-		sysRoleService.insertRole(sysRole);
+	public Result insertRole(@ModelAttribute SysRole sysRole) {
+		sysRole.insert();
 		return Result.ok();
 	}
 
@@ -60,8 +61,10 @@ public class SysRoleController extends AbstractController {
 	@PostMapping("/deleteRole/{roleId}")
 	@RequiresPermissions("sys:role:info")
 	@Log(value = "删除角色")
-	public Result deleteRole(@PathVariable("roleId") String roleId) {
-		sysRoleService.deleteRoleByRoleId(roleId);
+	public Result deleteRole(@PathVariable("roleId") String[] roleId) {
+		for (String roleid : roleId) {
+			sysRoleService.deleteRoleByRoleId(roleid);
+		}
 		return Result.ok();
 	}
 
@@ -70,7 +73,7 @@ public class SysRoleController extends AbstractController {
 	@Log(value = "角色拥有的资源")
 	public Result queryAllMenuIshave(@PathVariable Integer roleId) {
 		List<SysRoleMenu> isHaveMenus = sysRoleMenuMapper.selectList(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
-		List<Integer> isHaveMenuIds = isHaveMenus.stream().map(info -> info.getMenuId()).collect(Collectors.toList());
+		Set<Integer> isHaveMenuIds = isHaveMenus.stream().map(info -> info.getMenuId()).collect(Collectors.toSet());
 		List<SysMenu> sysMenus = sysMenuService.querySysMenuTree(0);
 		return Result.ok().put("sysMenus", sysMenus).put("isHaveMenuIds", isHaveMenuIds);
 	}
@@ -82,7 +85,6 @@ public class SysRoleController extends AbstractController {
 		String[] menus = param.get("menus").split(",");
 		String roleId = param.get("roleId");
 		sysRoleMenuMapper.delete(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
-
 		for (int i = 0; i < menus.length; i++) {
 			SysRoleMenu sysUserRole = new SysRoleMenu();
 			sysUserRole.setMenuId(Integer.parseInt(menus[i]));

@@ -20,9 +20,6 @@ public abstract class BaseEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-//	@TableId(type = IdType.ID_WORKER_STR)
-//	private String id;
-
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	@TableField(value = "create_time", fill = FieldFill.INSERT)

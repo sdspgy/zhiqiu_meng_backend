@@ -23,8 +23,6 @@ public class SysRole extends Model<SysRole> implements Serializable {
 	private Long roleId;
 	private String roleName;
 	private String remark;
-	private Long createUserId;
-	private String createTime;
 	@TableField(exist = false)
 	private List<SysMenu> sysMenus;
 	@TableField(exist = false)

@@ -21,8 +21,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 	private SysMenuMapper sysMenuMapper;
 
 	@Override
-	public List<SysMenu> queryMenuRouterByUserId(Integer userId) {
-		List<SysMenu> sysMenus = sysMenuMapper.queryMenuRouterByUserId(userId);
+	public List<SysMenu> queryMenuRouterByUserId(int parentId, int userId) {
+		List<SysMenu> sysMenus = sysMenuMapper.queryMenuRouterByUserId(parentId, userId);
 		return sysMenus;
 	}
 

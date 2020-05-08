@@ -39,15 +39,15 @@
         <result column="order_num" property="orderNum" jdbcType="VARCHAR"/>
         <result column="icon" property="icon" jdbcType="VARCHAR"/>
 
-        <collection property="children" select="queryMenuRouterByUserId" column="menu_id">
+        <collection property="children" select="queryMenuRouterByUserId" column="{parentId=menu_id,userId=user_id}">
         </collection>
     </resultMap>
 
-    <select id="queryMenuRouterByUserId" parameterType="java.lang.Integer" resultMap="sysMenuMaps">
-        select distinct sm.menu_id,sm.parent_id, sm.path,sm.name,sm.title,sm.notes,sm.perms,sm.type,sm.icon,sm.order_num from `sys_user_role` sur
+    <select id="queryMenuRouterByUserId" resultMap="sysMenuMaps">
+        select distinct sm.menu_id,sm.parent_id, sm.path,sm.name,sm.title,sm.notes,sm.perms,sm.type,sm.icon,sm.order_num,sur.user_id from `sys_user_role` sur
                 left join `sys_role_menu` srm using(role_id)
                 left join `sys_menu` sm using(menu_id)
-                where sm.type = 3 and sm.parent_id  = #{parentId} and sur.user_id = 1
+                where sm.type = 3 and sm.parent_id  = #{parentId} and sur.user_id = #{userId}
                 order by sm.order_num ASC
     </select>
 

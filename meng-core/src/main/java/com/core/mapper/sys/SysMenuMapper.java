@@ -12,7 +12,7 @@ import java.util.List;
  */
 public interface SysMenuMapper extends BaseMapper<SysMenu> {
 
-	List<SysMenu> queryMenuRouterByUserId(Integer parentId);
+	List<SysMenu> queryMenuRouterByUserId(int parentId, int userId);
 
 	/*查询完整权限树*/
 	List<SysMenu> querySysMenuTree(Integer parentId);

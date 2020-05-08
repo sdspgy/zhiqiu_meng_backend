@@ -12,7 +12,6 @@ import com.core.common.exception.ErrorEnum;
 import com.core.common.exception.MyException;
 import com.core.common.utils.AesCbcUtil;
 import com.core.common.utils.MessageUtils;
-import com.core.common.utils.QiniuUploadUtils;
 import com.core.common.utils.WxUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
@@ -29,17 +28,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -62,7 +59,7 @@ public class SysLoginController extends AbstractController {
 	@ApiImplicitParams({
 					@ApiImplicitParam(name = "SysLoginForm", value = "form", required = true, dataTypeClass = SysLoginForm.class)
 	})
-	@PostMapping("/admin/sys/login")
+	@PostMapping("/sys/login")
 	public Result login(@RequestBody @Valid SysLoginForm form, BindingResult errorResult) {
 		if (errorResult.hasErrors()) {
 			List<ObjectError> errors = errorResult.getAllErrors();
