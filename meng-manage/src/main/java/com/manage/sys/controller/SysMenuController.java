@@ -26,7 +26,7 @@ public class SysMenuController extends AbstractController {
 	private SysMenuServiceImpl sysMenuService;
 
 	@GetMapping("/menuRouter")
-	@RequiresPermissions("sys:menu:info")
+//	@RequiresPermissions("sys:menu:info")
 	public Result queryMenuRouter() {
 		List<SysMenu> sysMenus = sysMenuService.queryMenuRouterByUserId(0, getUserId().intValue());
 		return Result.ok().put("sysMenus", sysMenus);

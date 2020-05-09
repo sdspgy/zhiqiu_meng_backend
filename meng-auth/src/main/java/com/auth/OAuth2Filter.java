@@ -58,7 +58,7 @@ public class OAuth2Filter extends AuthenticatingFilter {
 		try {
 			/*处理登录失败的异常*/
 			Throwable throwable = e.getCause() == null ? e : e.getCause();
-			Result r = Result.error(ErrorEnum.NO_AUTH.getCode(), throwable.getMessage());
+			Result r = Result.error(ErrorEnum.TOKEN_INVALID.getCode(), throwable.getMessage());
 			String json = JsonUtils.toJson(r);
 			httpResponse.getWriter().print(json);
 		} catch (Exception e1) {

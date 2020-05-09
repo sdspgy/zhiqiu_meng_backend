@@ -22,7 +22,7 @@
         </collection>
     </resultMap>
 
-    <!--查询所有用户信息-->
+    <!--查询用户路由信息-->
     <select id="querySysMenuTree" parameterType="java.lang.Integer" resultMap="sysMenuMap">
         select <include refid="sysMenu"></include> from sys_menu sm where parent_id = #{parentId} order by order_num ASC
     </select>

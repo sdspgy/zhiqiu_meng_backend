@@ -3,6 +3,7 @@ package com.manage.sys.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.core.common.aop.Log;
 import com.core.common.base.AbstractController;
+import com.core.common.utils.StringUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysMenu;
 import com.core.entity.sys.SysRole;
@@ -68,8 +69,8 @@ public class SysRoleController extends AbstractController {
 		return Result.ok();
 	}
 
-	@GetMapping("/queryAllMenuIshave/{roleId}")
-	@RequiresPermissions("sys:user:queryAllMenuIshave")
+	@PostMapping("/queryAllMenuIshave/{roleId}")
+	@RequiresPermissions("sys:role:info")
 	@Log(value = "角色拥有的资源")
 	public Result queryAllMenuIshave(@PathVariable Integer roleId) {
 		List<SysRoleMenu> isHaveMenus = sysRoleMenuMapper.selectList(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
@@ -78,18 +79,20 @@ public class SysRoleController extends AbstractController {
 		return Result.ok().put("sysMenus", sysMenus).put("isHaveMenuIds", isHaveMenuIds);
 	}
 
-	@PostMapping("updateRoleMenus")
-	@RequiresPermissions("sys:user:updateMenus")
+	@PostMapping("/updateRoleMenus")
+	@RequiresPermissions("sys:role:info")
 	@Log(value = "修改角色资源")
 	public Result updateRoleMenus(@RequestParam Map<String, String> param) {
-		String[] menus = param.get("menus").split(",");
-		String roleId = param.get("roleId");
-		sysRoleMenuMapper.delete(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
-		for (int i = 0; i < menus.length; i++) {
-			SysRoleMenu sysUserRole = new SysRoleMenu();
-			sysUserRole.setMenuId(Integer.parseInt(menus[i]));
-			sysUserRole.setRoleId(Integer.parseInt(roleId));
-			sysRoleMenuMapper.insert(sysUserRole);
+		if (StringUtils.isNotBlank(param.get("menuIds"))) {
+			String[] menus = param.get("menuIds").split(",");
+			String roleId = param.get("roleId");
+			sysRoleMenuMapper.delete(new QueryWrapper<SysRoleMenu>().eq("role_id", roleId));
+			for (int i = 0; i < menus.length; i++) {
+				SysRoleMenu sysUserRole = new SysRoleMenu();
+				sysUserRole.setMenuId(Integer.parseInt(menus[i]));
+				sysUserRole.setRoleId(Integer.parseInt(roleId));
+				sysRoleMenuMapper.insert(sysUserRole);
+			}
 		}
 		return Result.ok();
 	}

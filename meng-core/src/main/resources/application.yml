@@ -13,12 +13,12 @@ spring:
   profiles:
     # 环境 开发dev，测试test，生产prod
     active: dev
-  # 模板引擎
-#  thymeleaf:
-#    mode: HTML
-#    encoding: utf-8
+    # 模板引擎
+    #  thymeleaf:
+    #    mode: HTML
+    #    encoding: utf-8
     # 禁用缓存
-#    cache: false
+  #    cache: false
   # 资源信息
   messages:
     # 国际化资源文件路径
@@ -57,7 +57,7 @@ mybatis-plus:
   #mapper文件
   mapper-locations: classpath:mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
-#  type-aliases-package: com.core.entity.*
+  #  type-aliases-package: com.core.entity.*
   global-config:
     #刷新Mapper，只在开发环境打开
     refresh: true
@@ -91,3 +91,4 @@ user:
   password:
     # 密码错误{maxRetryCount}次锁定10分钟
     maxRetryCount: 8
+  defaltHeadUrl: http://img5.imgtn.bdimg.com/it/u=198792136,4147861985&fm=26&gp=0.jpg

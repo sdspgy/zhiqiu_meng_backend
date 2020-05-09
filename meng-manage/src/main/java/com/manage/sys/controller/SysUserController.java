@@ -11,18 +11,16 @@ import com.core.mapper.sys.SysUserRoleMapper;
 import com.manage.sys.service.SysRoleService;
 import com.manage.sys.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Author:         知秋
@@ -30,9 +28,12 @@ import java.util.Random;
  */
 @Slf4j
 @RestController
-@RequestMapping("/admin/sys/user")
+@RequestMapping("/sys/user")
 @EnableScheduling
 public class SysUserController extends AbstractController {
+
+	@Value(value = "${user.defaltHeadUrl}")
+	private String defaltHeadUrl;
 
 	@Autowired
 	private SysUserService sysUserService;
@@ -65,9 +66,9 @@ public class SysUserController extends AbstractController {
 	}
 
 	@PostMapping("/allUser")
-	@RequiresPermissions(value = { "sys:user:queryAllUser", "sys:user:info" }, logical = Logical.AND)
+	@RequiresPermissions("sys:user:info")
 	@Log(value = "所有用户信息(角色）")
-	public Result queryAllUser(@RequestParam Map<String, String> params) {
+	public Result queryAllUser() {
 		List<SysUser> sysUsers = sysUserService.queryAllUser();
 		return Result.ok().put("sysUsers", sysUsers);
 	}
@@ -81,25 +82,32 @@ public class SysUserController extends AbstractController {
 	}
 
 	@PostMapping("/insertUser")
-	@RequiresPermissions("sys:user:insert")
+	@RequiresPermissions("sys:user:info")
 	@Log(value = "用户添加")
 	public Result insertUser(@RequestParam Map<String, Object> params) {
-		String[] roleIdLists = ((String) params.get("roleIdList")).split(",");
-
 		int userId = (int) System.currentTimeMillis();
-		new Random().nextInt(Integer.MAX_VALUE);
 		SysUser sysUser = new SysUser();
 		sysUser.setUserId(userId);
+		sysUser.setPassword("123456");
+		sysUser.setSalt("123456");
 		sysUser.setUsername(String.valueOf(params.get("username")));
 		sysUser.setStatus((String) params.get("status"));
+		if (StringUtils.isEmpty(params.get("headUrl"))) {
+			sysUser.setHeadUrl(defaltHeadUrl);
+		} else {
+			sysUser.setHeadUrl(params.get("headUrl").toString());
+		}
 		sysUserService.insertUser(sysUser);
 
-		List<String> strings = Arrays.asList(roleIdLists);
-		for (String info : strings) {
-			SysUserRole sysUserRole = new SysUserRole();
-			sysUserRole.setUserId(userId);
-			sysUserRole.setRoleId(Integer.parseInt(info));
-			sysUserRoleMapper.insert(sysUserRole);
+		/*角色处理*/
+		if (!StringUtils.isEmpty((String) params.get("roleIdList"))) {
+			String[] roleIdLists = ((String) params.get("roleIdList")).split(",");
+			for (String info : roleIdLists) {
+				SysUserRole sysUserRole = new SysUserRole();
+				sysUserRole.setUserId(userId);
+				sysUserRole.setRoleId(Integer.parseInt(info));
+				sysUserRoleMapper.insert(sysUserRole);
+			}
 		}
 		return Result.ok();
 	}
