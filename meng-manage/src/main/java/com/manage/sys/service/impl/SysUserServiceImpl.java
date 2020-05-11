@@ -34,7 +34,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public void deletetUserByUserId(String userId) {
-        sysUserMapper.deleteById(new QueryWrapper<SysUser>().eq("user_id", userId));
+        sysUserMapper.delete(new QueryWrapper<SysUser>().eq("user_id", userId));
     }
 
     @Override

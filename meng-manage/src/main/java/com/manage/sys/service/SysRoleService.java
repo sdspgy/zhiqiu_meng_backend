@@ -19,5 +19,4 @@ public interface SysRoleService extends IService<SysRole> {
 
 	void deleteRoleByRoleId(String roleId);
 
-	void insertRole(SysRole sysRole);
 }

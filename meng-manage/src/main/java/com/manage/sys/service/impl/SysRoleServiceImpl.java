@@ -35,9 +35,4 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 	public void deleteRoleByRoleId(String roleId) {
 		sysRoleMapper.delete(new QueryWrapper<SysRole>().eq("role_id", roleId));
 	}
-
-	@Override
-	public void insertRole(SysRole sysRole) {
-		sysRoleMapper.insert(sysRole);
-	}
 }

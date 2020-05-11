@@ -25,8 +25,6 @@ public class SysRole extends Model<SysRole> implements Serializable {
 	private String remark;
 	@TableField(exist = false)
 	private List<SysMenu> sysMenus;
-	@TableField(exist = false)
-	private Boolean isHave;
 
 	@Override
 	protected Serializable pkVal() {

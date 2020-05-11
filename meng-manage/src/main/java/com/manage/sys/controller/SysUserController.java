@@ -1,8 +1,11 @@
 package com.manage.sys.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.core.common.aop.Log;
 import com.core.common.base.AbstractController;
+import com.core.common.exception.ErrorEnum;
+import com.core.common.utils.MessageUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysRole;
 import com.core.entity.sys.SysUser;
@@ -12,6 +15,7 @@ import com.manage.sys.service.SysRoleService;
 import com.manage.sys.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -48,9 +52,6 @@ public class SysUserController extends AbstractController {
 		log.info("--------" + "定时任务" + "--------");
 	}
 
-	/**
-	 * 用户信息
-	 */
 	@GetMapping("/info")
 	@RequiresPermissions("sys:user:info")
 	@Log(value = "用户信息")
@@ -74,10 +75,36 @@ public class SysUserController extends AbstractController {
 	}
 
 	@PostMapping("/updateUser")
-	@RequiresPermissions("sys:user:update")
+	@RequiresPermissions("sys:user:info")
 	@Log(value = "用户修改")
 	public Result updateUser(@RequestBody SysUser sysUser) {
 		sysUserService.updateById(sysUser);
+		return Result.ok();
+	}
+
+	@GetMapping("/changeUserHeadUrl")
+	@RequiresPermissions("sys:user:info")
+	public Result changeUserHeadUrl(String headUrl) {
+		SysUser sysUser = new SysUser();
+		if (StringUtils.isEmpty(headUrl)) {
+			sysUser.setHeadUrl(defaltHeadUrl);
+		} else {
+			sysUser.setHeadUrl(headUrl);
+		}
+		sysUserService.update(sysUser, new UpdateWrapper<SysUser>().lambda().eq(SysUser::getUserId, getUserId()));
+		return Result.ok();
+	}
+
+	@PostMapping("/changePassword")
+	public Result changePassword(String oldPassword, String newPassword) {
+		SysUser user = sysUserService.getById(getUserId());
+		if (user.getPassword().equals(new Sha256Hash(oldPassword, user.getSalt()).toHex())) {
+			SysUser sysUser = new SysUser();
+			sysUser.setPassword(new Sha256Hash(newPassword, user.getSalt()).toHex());
+			sysUserService.update(sysUser, new UpdateWrapper<SysUser>().lambda().eq(SysUser::getUserId, getUserId()));
+		} else {
+			return Result.error(ErrorEnum.PARAM_ERROR.getCode(), MessageUtils.message("user.password.not.match"));
+		}
 		return Result.ok();
 	}
 
@@ -88,7 +115,7 @@ public class SysUserController extends AbstractController {
 		int userId = (int) System.currentTimeMillis();
 		SysUser sysUser = new SysUser();
 		sysUser.setUserId(userId);
-		sysUser.setPassword("123456");
+		sysUser.setPassword(new Sha256Hash("123456", "123456").toHex());
 		sysUser.setSalt("123456");
 		sysUser.setUsername(String.valueOf(params.get("username")));
 		sysUser.setStatus((String) params.get("status"));
@@ -98,54 +125,33 @@ public class SysUserController extends AbstractController {
 			sysUser.setHeadUrl(params.get("headUrl").toString());
 		}
 		sysUserService.insertUser(sysUser);
-
-		/*角色处理*/
-		if (!StringUtils.isEmpty((String) params.get("roleIdList"))) {
-			String[] roleIdLists = ((String) params.get("roleIdList")).split(",");
-			for (String info : roleIdLists) {
-				SysUserRole sysUserRole = new SysUserRole();
-				sysUserRole.setUserId(userId);
-				sysUserRole.setRoleId(Integer.parseInt(info));
-				sysUserRoleMapper.insert(sysUserRole);
-			}
-		}
 		return Result.ok();
 	}
 
 	@PostMapping("/deletetUser/{userId}")
-	@RequiresPermissions("sys:user:deletet")
+	@RequiresPermissions("sys:user:info")
 	@Log(value = "用户删除")
-	public Result deletetUser(@PathVariable("userId") String userId) {
-		sysUserService.deletetUserByUserId(userId);
+	public Result deletetUser(@PathVariable("userId") String[] userIds) {
+		for (int i = 0; i < userIds.length; i++) {
+			sysUserService.deletetUserByUserId(userIds[i]);
+		}
 		return Result.ok();
 	}
 
-	@GetMapping("/queryAllRoleIshave/{userId}")
-	@RequiresPermissions("sys:user:queryallRoleIshave")
-	@Log(value = "用户拥有的角色")
-	public Result queryAllRoleIshave(@PathVariable Integer userId) {
-		List<SysRole> isSysRoles = sysRoleService.queryUserRoles(userId);
-		List<SysRole> sysRoles = sysRoleService.queryAllRoles();
-		sysRoles.forEach(info -> {
-			if (isSysRoles.contains(info)) {
-				info.setIsHave(true);
-			}
-		});
-		return Result.ok().put("sysRoles", sysRoles);
-	}
-
 	@PostMapping("updateUserRoles")
-	@RequiresPermissions("sys:user:updateRoles")
+	@RequiresPermissions("sys:user:info")
 	@Log(value = "修改用户角色")
 	public Result updateUserRoles(@RequestParam Map<String, String> param) {
-		String[] roles = param.get("roles").split(",");
 		String userId = param.get("userId");
 		sysUserRoleMapper.delete(new QueryWrapper<SysUserRole>().eq("user_id", userId));
-		for (int i = 0; i < roles.length; i++) {
-			SysUserRole sysUserRole = new SysUserRole();
-			sysUserRole.setRoleId(Integer.parseInt(roles[i]));
-			sysUserRole.setUserId(Integer.parseInt(userId));
-			sysUserRoleMapper.insert(sysUserRole);
+		if (!StringUtils.isEmpty(param.get("roles"))) {
+			String[] roles = param.get("roles").split(",");
+			for (int i = 0; i < roles.length; i++) {
+				SysUserRole sysUserRole = new SysUserRole();
+				sysUserRole.setRoleId(Integer.parseInt(roles[i]));
+				sysUserRole.setUserId(Integer.parseInt(userId));
+				sysUserRoleMapper.insert(sysUserRole);
+			}
 		}
 		return Result.ok();
 	}
