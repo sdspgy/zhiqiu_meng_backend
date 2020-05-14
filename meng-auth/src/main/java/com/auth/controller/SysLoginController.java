@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -146,6 +147,13 @@ public class SysLoginController extends AbstractController {
 		return token;
 	}
 
+	@GetMapping("/sys/logout")
+	public Result logout(Integer userId) {
+		if (!StringUtils.isEmpty(userId)) {
+			sysUserTokenService.logout(userId);
+		}
+		return Result.ok();
+	}
 
 	/*excel测试*/
 /*	@PutMapping("/expor")
