@@ -6,10 +6,7 @@ import com.core.common.aop.Log;
 import com.core.common.base.AbstractController;
 import com.core.common.exception.ErrorEnum;
 import com.core.common.utils.MessageUtils;
-import com.core.entity.sys.Result;
-import com.core.entity.sys.SysRole;
-import com.core.entity.sys.SysUser;
-import com.core.entity.sys.SysUserRole;
+import com.core.entity.sys.*;
 import com.core.mapper.sys.SysUserRoleMapper;
 import com.manage.sys.service.SysRoleService;
 import com.manage.sys.service.SysUserService;
@@ -69,9 +66,12 @@ public class SysUserController extends AbstractController {
 	@PostMapping("/allUser")
 	@RequiresPermissions("sys:user:info")
 	@Log(value = "所有用户信息(角色）")
-	public Result queryAllUser() {
-		List<SysUser> sysUsers = sysUserService.queryAllUser();
-		return Result.ok().put("sysUsers", sysUsers);
+	public Result queryAllUser(@RequestBody PageVo pageVo) {
+		int size = (pageVo.getPageSize() - 1) * pageVo.getPageNumber();
+		List<SysUser> sysUsers = sysUserService.queryAllUser(size, pageVo.getPageNumber());
+		int sumUser = sysUserService.count();
+		return Result.ok().put("sysUsers", sysUsers)
+						.put("sumUser", sumUser);
 	}
 
 	@PostMapping("/updateUser")

@@ -28,17 +28,7 @@
         select su.*,sr.role_id,sr.role_name from sys_user su
         left join sys_user_role sur on su.user_id = sur.user_id
         left join sys_role sr using(role_id)
-        <where>
-            <if test="username != null and username != ''">
-                su.username = #{username}
-            </if>
-            <if test=" startTime != null ">
-                <![CDATA[ and t.create_time >= #{startTime} ]]>
-            </if>
-            <if test=" endTime != null ">
-                <![CDATA[ and t.create_time <= #{endTime} ]]>
-            </if>
-        </where>
+        limit #{size} , #{number}
     </select>
 
     <!--查询用户的所有权限-->

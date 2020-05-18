@@ -27,7 +27,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
 	 *
 	 * @return
 	 */
-	List<SysUser> queryAllUser();
+	List<SysUser> queryAllUser(int size, int number);
 
 	/**
 	 * 批量重置密码
