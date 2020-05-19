@@ -1,5 +1,6 @@
 package com.manage.sys.controller;
 
+import com.auth.service.ShiroService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.core.common.aop.Log;
@@ -20,8 +21,10 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Author:         知秋
@@ -42,6 +45,8 @@ public class SysUserController extends AbstractController {
 	private SysRoleService sysRoleService;
 	@Autowired
 	private SysUserRoleMapper sysUserRoleMapper;
+	@Resource
+	private ShiroService shiroService;
 
 	//	@Scheduled(fixedRate = 5000)
 	@Scheduled(cron = "0 30 5 * * ?")
@@ -60,7 +65,8 @@ public class SysUserController extends AbstractController {
 		/*获取用户所属的角色列表*/
 		List<SysRole> roleList = sysRoleService.queryUserRoles(userId);
 		user.setRoleList(roleList);
-		return Result.ok().put("user", user);
+		Set<String> permsSet = shiroService.getUserPermissions(userId);
+		return Result.ok().put("user", user).put("perms", permsSet);
 	}
 
 	@PostMapping("/allUser")

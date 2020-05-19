@@ -32,7 +32,7 @@
     </select>
 
     <!--查询用户的所有权限-->
-    <select id="queryAllPerms" resultType="java.lang.String" parameterType="java.lang.Long">
+    <select id="queryAllPerms" resultType="java.lang.String" parameterType="java.lang.Integer">
         select sm.perms from sys_user_role sur
           left join sys_role_menu srm on sur.role_id=srm.role_id
           left join sys_menu sm on srm.menu_id = sm.menu_id
