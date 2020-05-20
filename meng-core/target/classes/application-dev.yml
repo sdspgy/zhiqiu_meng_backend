@@ -20,7 +20,7 @@ spring:
         enabled: true
         url-pattern: /druid/*
         login-username: admin
-        login-password: admin
+        login-password: ENC(pljingaFt4rsC7To/d4rOw==)
       filter:
         stat:
           log-slow-sql: true
@@ -36,7 +36,7 @@ spring:
           driver-class-name: com.mysql.jdbc.Driver
           url: jdbc:mysql://10.2.10.29:3306/meng?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
           username: zhiqiu
-          password: zhiqiu
+          password: ENC(WcqRuHAcy9hgNhwlSE2VdA==)
 
   kafka:
     bootstrap-servers: 127.0.0.1:9092
@@ -94,4 +94,13 @@ spring:
 
 jasypt:
   encryptor:
-    password: 123456
+    password: zhiqiu #这里可以理解成是加解密的时候使用的密钥
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

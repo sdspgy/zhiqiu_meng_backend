@@ -30,7 +30,6 @@ import java.util.Enumeration;
 @Slf4j
 public class LogAspect extends AbstractController {
 
-	//	@Pointcut("within(@org.springframework.web.bind.annotation.RequestMapping *)")
 	@Pointcut("@annotation(com.core.common.aop.Log)")
 	public void logPointCut() {
 

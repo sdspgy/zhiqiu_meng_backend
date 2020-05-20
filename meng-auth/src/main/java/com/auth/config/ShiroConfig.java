@@ -57,6 +57,7 @@ public class ShiroConfig {
 		filterMap.put("/wx/sys/isAuthor", "anon");
 		filterMap.put("/sys/**", "oauth2");
 		filterMap.put("/small/**", "oauth2");
+		filterMap.put("/actuator/**", "oauth2");
 		filterMap.put("/open/**", "anon");
 		filterMap.put("/**", "anon");
 		shiroFilter.setFilterChainDefinitionMap(filterMap);

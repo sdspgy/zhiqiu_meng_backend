@@ -1,5 +1,8 @@
 package com.auth.controller;
 
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.metadata.Sheet;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.auth.service.SysUserTokenService;
@@ -15,7 +18,9 @@ import com.core.common.utils.MessageUtils;
 import com.core.common.utils.WxUtils;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
+import com.core.entity.sys.SysMenu;
 import com.core.entity.sys.SysUser;
+import com.core.mapper.sys.SysMenuMapper;
 import com.core.mapper.sys.SysUserMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -35,6 +40,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -50,6 +57,7 @@ import java.util.stream.Collectors;
 public class SysLoginController extends AbstractController {
 
 	@Autowired SysUserMapper sysUserMapper;
+	@Autowired SysMenuMapper sysMenuMapper;
 
 	@Autowired SysUserTokenService sysUserTokenService;
 
@@ -156,7 +164,7 @@ public class SysLoginController extends AbstractController {
 	}
 
 	/*excel测试*/
-/*	@PutMapping("/expor")
+	@GetMapping("/expor")
 	public void exporExcel(HttpServletResponse response) throws IOException {
 		ExcelWriter writer = null;
 		OutputStream outputStream = response.getOutputStream();
@@ -166,10 +174,10 @@ public class SysLoginController extends AbstractController {
 			//实例化 ExcelWriter
 			writer = new ExcelWriter(outputStream, ExcelTypeEnum.XLS, true);
 			//实例化表单
-			Sheet sheet = new Sheet(1, 0, SysUser.class);
+			Sheet sheet = new Sheet(1, 0, SysMenu.class);
 			sheet.setSheetName("用户信息");
 			//获取数据
-			List<SysUser> userList = sysUserMapper.queryAllUser();
+			List<SysMenu> userList = sysMenuMapper.selectLists();
 			//输出
 			writer.write(userList, sheet);
 			writer.finish();
@@ -179,7 +187,7 @@ public class SysLoginController extends AbstractController {
 		} finally {
 			response.getOutputStream().close();
 		}
-	}*/
+	}
 
 	private void head(HttpServletResponse response) {
 		response.setHeader("Content-disposition", "attachment; filename=" + "catagory.xls");
