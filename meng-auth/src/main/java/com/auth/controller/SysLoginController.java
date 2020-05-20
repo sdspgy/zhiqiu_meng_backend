@@ -16,10 +16,12 @@ import com.core.common.exception.MyException;
 import com.core.common.utils.AesCbcUtil;
 import com.core.common.utils.MessageUtils;
 import com.core.common.utils.WxUtils;
+import com.core.entity.fans.Fans;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
 import com.core.entity.sys.SysMenu;
 import com.core.entity.sys.SysUser;
+import com.core.mapper.fans.FansMapper;
 import com.core.mapper.sys.SysMenuMapper;
 import com.core.mapper.sys.SysUserMapper;
 import io.swagger.annotations.Api;
@@ -56,144 +58,147 @@ import java.util.stream.Collectors;
 @RestController
 public class SysLoginController extends AbstractController {
 
-	@Autowired SysUserMapper sysUserMapper;
-	@Autowired SysMenuMapper sysMenuMapper;
+    @Autowired
+    SysUserMapper sysUserMapper;
+    @Autowired
+    FansMapper fansMapper;
 
-	@Autowired SysUserTokenService sysUserTokenService;
+    @Autowired
+    SysUserTokenService sysUserTokenService;
 
-	@Value(value = "${user.password.maxRetryCount}")
-	private String maxRetryCount;
+    @Value(value = "${user.password.maxRetryCount}")
+    private String maxRetryCount;
 
-	@ApiOperation(value = "/admin/sys/login", notes = "login")
-	@ApiImplicitParams({
-					@ApiImplicitParam(name = "SysLoginForm", value = "form", required = true, dataTypeClass = SysLoginForm.class)
-	})
-	@PostMapping("/sys/login")
-	public Result login(@RequestBody @Valid SysLoginForm form, BindingResult errorResult) {
-		if (errorResult.hasErrors()) {
-			List<ObjectError> errors = errorResult.getAllErrors();
-			List<String> messAges = errors.stream().map(info -> info.getDefaultMessage()).collect(Collectors.toList());
-			String msg = StringUtils.collectionToDelimitedString(messAges, ",");
-			return Result.error(msg);
-		}
-		//用户信息
-		SysUser user = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
-						.lambda()
-						.eq(SysUser::getUsername, form.getUsername()));
-		if (user == null || !user.getPassword().equals(new Sha256Hash(form.getPassword(), user.getSalt()).toHex())) {
-			//用户名或密码错误
-			AsyncManager.me().execute(AsyncFactory.recordLogininfo(user.getUsername(), "fail", MessageUtils.message("user.password.retry.limit.exceed", maxRetryCount)));
-			return Result.error(ErrorEnum.USERNAME_OR_PASSWORD_WRONG);
-		}
-		if (user.getStatus().equals(SysConstants.ACCOUNT_LOCKING)) {
-			return Result.error(MessageUtils.message("user.blocked"));
-		}
+    @ApiOperation(value = "/admin/sys/login", notes = "login")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "SysLoginForm", value = "form", required = true, dataTypeClass = SysLoginForm.class)
+    })
+    @PostMapping("/sys/login")
+    public Result login(@RequestBody @Valid SysLoginForm form, BindingResult errorResult) {
+        if (errorResult.hasErrors()) {
+            List<ObjectError> errors = errorResult.getAllErrors();
+            List<String> messAges = errors.stream().map(info -> info.getDefaultMessage()).collect(Collectors.toList());
+            String msg = StringUtils.collectionToDelimitedString(messAges, ",");
+            return Result.error(msg);
+        }
+        //用户信息
+        SysUser user = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+                .lambda()
+                .eq(SysUser::getUsername, form.getUsername()));
+        if (user == null || !user.getPassword().equals(new Sha256Hash(form.getPassword(), user.getSalt()).toHex())) {
+            //用户名或密码错误
+            AsyncManager.me().execute(AsyncFactory.recordLogininfo(user.getUsername(), "fail", MessageUtils.message("user.password.retry.limit.exceed", maxRetryCount)));
+            return Result.error(ErrorEnum.USERNAME_OR_PASSWORD_WRONG);
+        }
+        if (user.getStatus().equals(SysConstants.ACCOUNT_LOCKING)) {
+            return Result.error(MessageUtils.message("user.blocked"));
+        }
 
-		//生成token，并保存到redis
-		return sysUserTokenService.createToken(user.getUserId());
-	}
+        //生成token，并保存到redis
+        return sysUserTokenService.createToken(user.getUserId());
+    }
 
-	@ApiOperation(value = "/wx/sys/isAuthor", notes = "微信判断授权")
-	@ApiImplicitParams({
-					@ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
-	})
-	@PostMapping("/wx/sys/isAuthor")
-	public Result isAuthor(String code) {
-		if (StringUtils.isEmpty(code)) {
-			throw new MyException(ErrorEnum.PARAM_ERROR);
-		}
-		JSONObject wxInfo = WxUtils.produceWxInfo(code);
-		String openId = wxInfo.getString("openid");
-		SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
-						.lambda().eq(SysUser::getOpenId, openId));
-		boolean isAuthor = true;
-		if (Objects.isNull(sysUser)) {
-			isAuthor = false;
-		}
-		return Result.ok().put("isAuthor", isAuthor);
-	}
+    @ApiOperation(value = "/wx/sys/isAuthor", notes = "微信判断授权")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
+    })
+    @PostMapping("/wx/sys/isAuthor")
+    public Result isAuthor(String code) {
+        if (StringUtils.isEmpty(code)) {
+            throw new MyException(ErrorEnum.PARAM_ERROR);
+        }
+        JSONObject wxInfo = WxUtils.produceWxInfo(code);
+        String openId = wxInfo.getString("openid");
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+                .lambda().eq(SysUser::getOpenId, openId));
+        boolean isAuthor = true;
+        if (Objects.isNull(sysUser)) {
+            isAuthor = false;
+        }
+        return Result.ok().put("isAuthor", isAuthor);
+    }
 
-	@ApiOperation(value = "/wx/sys/login", notes = "微信登录")
-	@ApiImplicitParams({
-					@ApiImplicitParam(name = "encryptedData", value = "encryptedData", required = true, dataTypeClass = String.class),
-					@ApiImplicitParam(name = "iv", value = "iv", required = true, dataTypeClass = String.class),
-					@ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
-	})
-	@PostMapping("/wx/sys/login")
-	public Result wxLogin(String encryptedData, String iv, String code) {
-		log.debug("----------------------执行------------------/wx/sys/login");
-		if (StringUtils.isEmpty(encryptedData) || StringUtils.isEmpty(iv) || StringUtils.isEmpty(code)) {
-			throw new MyException(ErrorEnum.PARAM_ERROR);
-		}
-		//解析出openid
-		JSONObject wxInfo = WxUtils.produceWxInfo(code);
-		String openId = wxInfo.getString("openid");
-		SysUser sysUser;
-		try {
-			//解析出详细信息
-			String result = AesCbcUtil.decrypt(encryptedData, wxInfo.getString("session_key"), iv, "UTF-8");
-			JSONObject detailedWxInfo = JSON.parseObject(result);
-			sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
-							.lambda().eq(SysUser::getOpenId, openId));
-			if (StringUtils.isEmpty(sysUser)) {
-				SysUser user = new SysUser();
-				user.setUserId(new Random().nextInt(Integer.MAX_VALUE));
-				user.setOpenId(openId);
-				user.setUsername(detailedWxInfo.getString("nickName"));
-				user.setHeadUrl(detailedWxInfo.getString("avatarUrl"));
-				sysUserMapper.insert(user);
-			}
-			//重新查一次
-			sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
-							.lambda().eq(SysUser::getOpenId, openId));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-		//生成token，并保存到redis
-		Result token = sysUserTokenService.createToken(sysUser.getUserId());
-		log.debug("----------------------结束------------------/wx/sys/login");
-		return token;
-	}
+    @ApiOperation(value = "/wx/sys/login", notes = "微信登录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "encryptedData", value = "encryptedData", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "iv", value = "iv", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "code", value = "code", required = true, dataTypeClass = String.class)
+    })
+    @PostMapping("/wx/sys/login")
+    public Result wxLogin(String encryptedData, String iv, String code) {
+        log.debug("----------------------执行------------------/wx/sys/login");
+        if (StringUtils.isEmpty(encryptedData) || StringUtils.isEmpty(iv) || StringUtils.isEmpty(code)) {
+            throw new MyException(ErrorEnum.PARAM_ERROR);
+        }
+        //解析出openid
+        JSONObject wxInfo = WxUtils.produceWxInfo(code);
+        String openId = wxInfo.getString("openid");
+        SysUser sysUser;
+        try {
+            //解析出详细信息
+            String result = AesCbcUtil.decrypt(encryptedData, wxInfo.getString("session_key"), iv, "UTF-8");
+            JSONObject detailedWxInfo = JSON.parseObject(result);
+            sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+                    .lambda().eq(SysUser::getOpenId, openId));
+            if (StringUtils.isEmpty(sysUser)) {
+                SysUser user = new SysUser();
+                user.setUserId(new Random().nextInt(Integer.MAX_VALUE));
+                user.setOpenId(openId);
+                user.setUsername(detailedWxInfo.getString("nickName"));
+                user.setHeadUrl(detailedWxInfo.getString("avatarUrl"));
+                sysUserMapper.insert(user);
+            }
+            //重新查一次
+            sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>()
+                    .lambda().eq(SysUser::getOpenId, openId));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        //生成token，并保存到redis
+        Result token = sysUserTokenService.createToken(sysUser.getUserId());
+        log.debug("----------------------结束------------------/wx/sys/login");
+        return token;
+    }
 
-	@GetMapping("/sys/logout")
-	public Result logout(Integer userId) {
-		if (!StringUtils.isEmpty(userId)) {
-			sysUserTokenService.logout(userId);
-		}
-		return Result.ok();
-	}
+    @GetMapping("/sys/logout")
+    public Result logout(Integer userId) {
+        if (!StringUtils.isEmpty(userId)) {
+            sysUserTokenService.logout(userId);
+        }
+        return Result.ok();
+    }
 
-	/*excel测试*/
-	@GetMapping("/expor")
-	public void exporExcel(HttpServletResponse response) throws IOException {
-		ExcelWriter writer = null;
-		OutputStream outputStream = response.getOutputStream();
-		try {
-			//添加响应头信息
-			head(response);
-			//实例化 ExcelWriter
-			writer = new ExcelWriter(outputStream, ExcelTypeEnum.XLS, true);
-			//实例化表单
-			Sheet sheet = new Sheet(1, 0, SysMenu.class);
-			sheet.setSheetName("用户信息");
-			//获取数据
-			List<SysMenu> userList = sysMenuMapper.selectLists();
-			//输出
-			writer.write(userList, sheet);
-			writer.finish();
-			outputStream.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			response.getOutputStream().close();
-		}
-	}
+    /*excel测试*/
+    @GetMapping("/expor")
+    public void exporExcel(HttpServletResponse response) throws IOException {
+        ExcelWriter writer = null;
+        OutputStream outputStream = response.getOutputStream();
+        try {
+            //添加响应头信息
+            head(response);
+            //实例化 ExcelWriter
+            writer = new ExcelWriter(outputStream, ExcelTypeEnum.XLS, true);
+            //实例化表单
+            Sheet sheet = new Sheet(1, 0, Fans.class);
+            sheet.setSheetName("用户信息");
+            //获取数据
+            List<Fans> userList = fansMapper.querys();
+            //输出
+            writer.write(userList, sheet);
+            writer.finish();
+            outputStream.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            response.getOutputStream().close();
+        }
+    }
 
-	private void head(HttpServletResponse response) {
-		response.setHeader("Content-disposition", "attachment; filename=" + "catagory.xls");
-		response.setContentType("application/msexcel;charset=UTF-8");//设置类型
-		response.setHeader("Pragma", "No-cache");//设置头
-		response.setHeader("Cache-Control", "no-cache");//设置头
-		response.setDateHeader("Expires", 0);//设置日期头
-	}
+    private void head(HttpServletResponse response) {
+        response.setHeader("Content-disposition", "attachment; filename=" + "catagory.xls");
+        response.setContentType("application/msexcel;charset=UTF-8");//设置类型
+        response.setHeader("Pragma", "No-cache");//设置头
+        response.setHeader("Cache-Control", "no-cache");//设置头
+        response.setDateHeader("Expires", 0);//设置日期头
+    }
 }

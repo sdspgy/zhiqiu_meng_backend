@@ -2,6 +2,9 @@ package com.core.mapper.fans;
 
 import com.core.entity.fans.Fans;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface FansMapper extends BaseMapper<Fans> {
 
+    @Select("select * from fans")
+    List<Fans> querys();
 }

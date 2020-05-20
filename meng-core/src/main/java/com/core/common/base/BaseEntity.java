@@ -1,5 +1,6 @@
 package com.core.common.base;
 
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;

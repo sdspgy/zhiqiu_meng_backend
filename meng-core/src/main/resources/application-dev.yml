@@ -34,9 +34,9 @@ spring:
       datasource:
         jdbc-admin:
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://10.2.10.29:3306/meng?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
-          username: zhiqiu
-          password: ENC(WcqRuHAcy9hgNhwlSE2VdA==)
+          url: jdbc:mysql://127.0.0.1:3306/meng?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false
+          username: root
+          password: root
 
   kafka:
     bootstrap-servers: 127.0.0.1:9092
