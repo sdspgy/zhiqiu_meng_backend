@@ -1,12 +1,20 @@
-package com.core.common.task;
+package com.manage.task.service;
 
+import com.core.common.enums.TaskState;
+import com.core.entity.task.TaskDefine;
+import com.core.entity.task.TaskShow;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Lists;
 import org.quartz.*;
+import org.quartz.impl.JobDetailImpl;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author zhiqiu
@@ -21,6 +29,39 @@ public class QuartzJobService {
 
 	public QuartzJobService(@Autowired SchedulerFactoryBean schedulerFactoryBean) {
 		scheduler = schedulerFactoryBean.getScheduler();
+	}
+
+	/**
+	 * 查询所有的任务
+	 *
+	 * @return
+	 */
+	public List<TaskShow> quaryAllTask() {
+		List<TaskShow> taskShowList = Lists.newArrayList();
+		try {
+			//再获取Scheduler下的所有group
+			List<String> triggerGroupNames = scheduler.getTriggerGroupNames();
+			for (String groupName : triggerGroupNames) {
+				//组装group的匹配，为了模糊获取所有的triggerKey或者jobKey
+				GroupMatcher groupMatcher = GroupMatcher.groupEquals(groupName);
+				//获取所有的triggerKey
+				Set<TriggerKey> triggerKeySet = scheduler.getTriggerKeys(groupMatcher);
+				for (TriggerKey triggerKey : triggerKeySet) {
+					String taskStateEnName = TaskState.getEnName(String.valueOf(scheduler.getTriggerState(triggerKey)));
+					//通过triggerKey在scheduler中获取trigger对象
+					CronTrigger trigger = (CronTrigger) scheduler.getTrigger(triggerKey);
+					//获取trigger拥有的Job
+					JobKey jobKey = trigger.getJobKey();
+					JobDetailImpl jobDetail = (JobDetailImpl) scheduler.getJobDetail(jobKey);
+					TaskShow taskShow = TaskShow.builder().name(jobKey.getName()).group(jobKey.getGroup()).cronExpression(trigger.getCronExpression()).state(taskStateEnName)
+									.description(jobDetail.getDescription()).jobTask(jobDetail.getJobClass().getName()).build();
+					taskShowList.add(taskShow);
+				}
+			}
+		} catch (SchedulerException e) {
+			e.printStackTrace();
+		}
+		return taskShowList;
 	}
 
 	/**

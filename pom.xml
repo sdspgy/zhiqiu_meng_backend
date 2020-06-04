@@ -69,6 +69,12 @@
                 </exclusions>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-text</artifactId>
+                <version>1.8</version>
+            </dependency>
+
             <!--web-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>

@@ -16,8 +16,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +31,7 @@ import java.util.Set;
 @Slf4j
 @RestController
 @RequestMapping("/sys/user")
-@EnableScheduling
+//@EnableScheduling
 public class SysUserController extends AbstractController {
 
 	@Value(value = "${user.defaltHeadUrl}")
@@ -48,8 +46,8 @@ public class SysUserController extends AbstractController {
 	@Resource
 	private ShiroService shiroService;
 
-	//	@Scheduled(fixedRate = 5000)
-	@Scheduled(cron = "0 30 5 * * ?")
+//	@Scheduled(fixedRate = 5000)
+//	@Scheduled(cron = "0 30 5 * * ?")
 	public void timeTask() {
 		log.info("--------" + "定时任务" + "--------");
 	}

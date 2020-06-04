@@ -1,4 +1,4 @@
-package com.core.common.task;
+package com.manage.task;
 
 import com.core.common.utils.ToolUtils;
 import lombok.extern.slf4j.Slf4j;

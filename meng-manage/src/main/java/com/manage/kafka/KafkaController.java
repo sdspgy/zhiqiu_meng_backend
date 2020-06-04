@@ -1,4 +1,4 @@
-package com.core.common.kafak;
+package com.manage.kafka;
 
 import com.core.entity.sys.Result;
 import io.swagger.annotations.Api;

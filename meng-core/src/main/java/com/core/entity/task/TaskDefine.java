@@ -1,4 +1,4 @@
-package com.core.common.task;
+package com.core.entity.task;
 
 import lombok.Builder;
 import lombok.Data;

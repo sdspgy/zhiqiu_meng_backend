@@ -1,4 +1,4 @@
-package com.auth.controller;
+package com.manage.sys.controller;
 
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
@@ -19,10 +19,8 @@ import com.core.common.utils.WxUtils;
 import com.core.entity.fans.Fans;
 import com.core.entity.sys.Result;
 import com.core.entity.sys.SysLoginForm;
-import com.core.entity.sys.SysMenu;
 import com.core.entity.sys.SysUser;
 import com.core.mapper.fans.FansMapper;
-import com.core.mapper.sys.SysMenuMapper;
 import com.core.mapper.sys.SysUserMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -126,7 +124,6 @@ public class SysLoginController extends AbstractController {
     })
     @PostMapping("/wx/sys/login")
     public Result wxLogin(String encryptedData, String iv, String code) {
-        log.debug("----------------------执行------------------/wx/sys/login");
         if (StringUtils.isEmpty(encryptedData) || StringUtils.isEmpty(iv) || StringUtils.isEmpty(code)) {
             throw new MyException(ErrorEnum.PARAM_ERROR);
         }
@@ -156,7 +153,6 @@ public class SysLoginController extends AbstractController {
         }
         //生成token，并保存到redis
         Result token = sysUserTokenService.createToken(sysUser.getUserId());
-        log.debug("----------------------结束------------------/wx/sys/login");
         return token;
     }
 
@@ -195,7 +191,7 @@ public class SysLoginController extends AbstractController {
     }
 
     private void head(HttpServletResponse response) {
-        response.setHeader("Content-disposition", "attachment; filename=" + "catagory.xls");
+        response.setHeader("Content-disposition", "attachment; filename=" + "测试.xls");
         response.setContentType("application/msexcel;charset=UTF-8");//设置类型
         response.setHeader("Pragma", "No-cache");//设置头
         response.setHeader("Cache-Control", "no-cache");//设置头
